@@ -1,0 +1,14 @@
+@import "tailwindcss";
+/* @import "tailwindcss/preflight";
+@import "tailwindcss/utilities"; */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* @layer base {
+    @font-face {
+        font-family: "Hypersystem";
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url("/assets/fonts/Hypersystem.ttf") format("truetype");
+    }
+} */
