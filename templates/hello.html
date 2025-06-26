@@ -6,6 +6,7 @@
         <title>Fourth Shot</title>
         <!-- Tailwind CSS CDN -->
         <script src="https://cdn.tailwindcss.com"></script>
+        <script src="/assets/htmx.min.js"></script>
         <!-- Google Fonts: Inter -->
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -181,9 +182,18 @@
                         <h2 class="text-2xl font-bold mb-6">Champions</h2>
                         <div
                             id="champions-grid"
-                            class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12 gap-4"
+                            hx-get="/champions"
+                            hx-trigger="load"
+                            hx-indicator="#loading-champions"
                         >
-                            <!-- Champion portraits will be injected here by JS -->
+                            <div
+                                id="loading-champions"
+                                class="htmx-indicator text-center py-8"
+                            >
+                                <div class="text-gray-400">
+                                    Loading champions...
+                                </div>
+                            </div>
                         </div>
                     </section>
 
@@ -255,32 +265,6 @@
         <script>
             document.addEventListener("DOMContentLoaded", () => {
                 // --- MOCK DATA ---
-                const champions = [
-                    { name: "Jhin", id: "jhin" },
-                    { name: "Ashe", id: "ashe" },
-                    { name: "Garen", id: "garen" },
-                    { name: "Lux", id: "lux" },
-                    { name: "Yasuo", id: "yasuo" },
-                    { name: "Ahri", id: "ahri" },
-                    { name: "Zed", id: "zed" },
-                    { name: "Caitlyn", id: "caitlyn" },
-                    { name: "Darius", id: "darius" },
-                    { name: "Ekko", id: "ekko" },
-                    { name: "Fiora", id: "fiora" },
-                    { name: "Irelia", id: "irelia" },
-                    { name: "Kai'Sa", id: "kaisa" },
-                    { name: "Lee Sin", id: "leesin" },
-                    { name: "Miss Fortune", id: "missfortune" },
-                    { name: "Riven", id: "riven" },
-                    { name: "Thresh", id: "thresh" },
-                    { name: "Vayne", id: "vayne" },
-                    { name: "Yasuo", id: "yasuo" },
-                    { name: "Yone", id: "yone" },
-                    { name: "Zoe", id: "zoe" },
-                    { name: "Akali", id: "akali" },
-                    { name: "Evelynn", id: "evelynn" },
-                    { name: "Seraphine", id: "seraphine" },
-                ];
 
                 const skinLines = [
                     {
@@ -408,21 +392,7 @@
 
                 // --- RENDER FUNCTIONS ---
 
-                // Function to render champion portraits
-                function renderChampions() {
-                    championsGrid.innerHTML = champions
-                        .map(
-                            (champ) => `
-                    <div class="group text-center cursor-pointer">
-                        <div class="w-full aspect-square bg-gray-800 rounded-lg overflow-hidden transform transition duration-300 group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-indigo-500/20">
-                            <img src="https://placehold.co/100x100/1f2937/4f46e5?text=${champ.name.substring(0, 1)}" alt="${champ.name}" class="w-full h-full object-cover">
-                        </div>
-                        <p class="mt-2 text-sm font-medium text-gray-300 group-hover:text-white transition">${champ.name}</p>
-                    </div>
-                `,
-                        )
-                        .join("");
-                }
+                // Champions are now loaded via HTMX
 
                 // Function to render skin line cards
                 function renderSkinLines() {
@@ -524,7 +494,6 @@
                 });
 
                 // --- INITIALIZATION ---
-                renderChampions();
                 renderSkinLines();
                 renderCreations();
 

@@ -18,6 +18,7 @@ const GAME_DATA_URL: &str =
     "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default";
 const V1: &str = "v1";
 const ASSETS: &str = "assets";
+const PROJ_NAME: &str = "fourth-shot";
 
 #[derive(Debug, Default, Display)]
 pub enum Status {
@@ -47,7 +48,7 @@ impl Display for CacheFile {
 pub struct CDragon {
     http_client: reqwest::Client,
     cache_dir: PathBuf,
-    data_dir: PathBuf,
+    pub data_dir: PathBuf,
     config_dir: PathBuf,
     status: Status,
     pub plugins: Vec<Plugin>,
@@ -56,7 +57,7 @@ pub struct CDragon {
 
 impl CDragon {
     pub async fn new() -> anyhow::Result<Self> {
-        let proj_dirs = directories::ProjectDirs::from("", "", "fourth-shot")
+        let proj_dirs = directories::ProjectDirs::from("", "", PROJ_NAME)
             .with_context(|| "failed to find the project directory")
             .unwrap();
         let cache_dir = proj_dirs.cache_dir().to_path_buf();
@@ -76,6 +77,7 @@ impl CDragon {
         cdrag.champions = cdrag
             .load_obj(CacheFile::Champions)
             .unwrap_or(cdrag.fetch_all_champions().await?);
+        cdrag.update().await?;
         Ok(cdrag)
     }
 
@@ -203,6 +205,10 @@ impl CDragon {
             .with_context(|| "failed to cache the updated champions")?;
         self.champions = champions;
 
+        for champ in &self.champions {
+            self.download_champion_icon(*champ.0).await?;
+        }
+
         self.status = Status::UpToDate;
         Ok(())
     }
@@ -311,8 +317,14 @@ impl CDragon {
             .square_portrait_path
             .clone()
             .into();
+
+        let file_path = self.data_dir.join(&icon_path);
+
+        if file_path.try_exists().is_ok_and(|v| v == true) {
+            return Ok(());
+        }
+
         let icon_url = format!("{GAME_DATA_URL}/{}", icon_path.to_str().unwrap());
-        dbg!(&icon_url);
         let bytes = self
             .http_client
             .get(icon_url)
@@ -698,7 +710,7 @@ mod test {
 
     #[rstest]
     #[tokio::test]
-    async fn update(#[future] cdrag_instance: anyhow::Result<CDragon>) -> anyhow::Result<()> {
+    async fn try_update(#[future] cdrag_instance: anyhow::Result<CDragon>) -> anyhow::Result<()> {
         let mut cdrag = cdrag_instance.await?;
         cdrag.update().await?;
         Ok(())

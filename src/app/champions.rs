@@ -1,9 +1,13 @@
-use axum::{Router, extract::State, response::IntoResponse, routing::get};
+use askama::Template;
+use axum::{
+    Router,
+    extract::State,
+    response::{Html, IntoResponse},
+    routing::get,
+};
 
 use super::AppError;
 use super::AppState;
-use crate::cdrag;
-use crate::cdrag::Champion;
 
 pub fn router<S>(state: AppState) -> Router<S> {
     Router::new()
@@ -12,12 +16,13 @@ pub fn router<S>(state: AppState) -> Router<S> {
 }
 
 struct ChampionGridItem {
-    id: u64,
     name: String,
     icon_url: String,
 }
 
-struct ChampionsGribTemplate {
+#[derive(Template)]
+#[template(path = "champions_grid.html")]
+struct ChampionsGridTemplate {
     champions: Vec<ChampionGridItem>,
 }
 
@@ -29,12 +34,15 @@ async fn champions_grid(State(state): State<AppState>) -> Result<impl IntoRespon
         .into_iter()
         .filter_map(|id| {
             state.cdrag.champion_by_id(*id).map(|ch| ChampionGridItem {
-                id: *id,
                 name: ch.name.clone(),
                 icon_url: ch.square_portrait_path.clone(),
             })
         })
         .collect();
 
-    Ok("Done")
+    let template = ChampionsGridTemplate {
+        champions: champ_objs,
+    };
+
+    Ok(Html(template.render()?))
 }

@@ -6,16 +6,19 @@ use reqwest::StatusCode;
 
 use crate::cdrag::CDragon;
 
-mod champions;
+pub mod champions;
 
-#[derive(Default, Debug, Clone)]
+#[derive(Debug, Clone)]
 pub struct AppState {
     pub cdrag: Arc<CDragon>,
 }
 
 impl AppState {
-    pub fn new() -> AppState {
-        AppState::default()
+    pub async fn new() -> anyhow::Result<AppState> {
+        let cdrag = CDragon::new().await?;
+        Ok(AppState {
+            cdrag: Arc::new(cdrag),
+        })
     }
 }
 

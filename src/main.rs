@@ -12,7 +12,7 @@ use tower_http::{services::ServeDir, trace::TraceLayer};
 use tracing::info_span;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-use fourth_shot::app::{AppError, AppState};
+use fourth_shot::app::{AppError, AppState, champions};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -29,18 +29,24 @@ async fn main() -> anyhow::Result<()> {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
+    let app_state = AppState::new().await?;
+
     let app = Router::new()
         .nest_service("/assets", ServeDir::new("assets"))
+        .nest_service(
+            "/cdrag-assets",
+            ServeDir::new(app_state.cdrag.data_dir.clone()),
+        )
         .route("/", get(hello))
         .route("/hello", get(say_hello))
-        .with_state(AppState::new())
+        .merge(champions::router(app_state.clone()))
+        .with_state(app_state)
         .layer(
             TraceLayer::new_for_http().make_span_with(|request: &Request<_>| {
                 let matched_path = request
                     .extensions()
                     .get::<MatchedPath>()
                     .map(MatchedPath::as_str);
-
                 info_span!(
                     "http_request",
                         method = ?request.method(),
