@@ -84,16 +84,9 @@ struct HelloTemplate {
 }
 
 #[derive(Template)]
-#[template(path = "hello.html")]
-struct IndexTemplate {
-    name: String,
-}
+#[template(path = "home.html")]
+struct IndexTemplate {}
 
 async fn hello() -> Result<impl IntoResponse, AppError> {
-    Ok(Html(
-        IndexTemplate {
-            name: "Corey".to_string(),
-        }
-        .render()?,
-    ))
+    Ok(Html(IndexTemplate {}.render()?))
 }

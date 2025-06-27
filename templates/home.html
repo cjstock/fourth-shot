@@ -40,9 +40,7 @@
     <body class="bg-gray-900 text-white">
         <div class="flex h-screen">
             <!-- Sidebar Navigation -->
-            <aside
-                class="w-64 bg-gray-900 border-r border-gray-700/50 p-6 flex-shrink-0 hidden md:flex flex-col"
-            >
+            <aside class="w-64 bg-gray-900 border-r border-gray-700/50 p-6 flex-shrink-0 hidden md:flex flex-col">
                 <h1 class="text-2xl font-bold text-white mb-12">Fourth Shot</h1>
                 <nav class="flex flex-col space-y-2">
                     <a
@@ -50,12 +48,7 @@
                         id="nav-splashes"
                         class="nav-link bg-gray-700/50 text-white px-4 py-2 rounded-lg font-semibold flex items-center space-x-3"
                     >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-5 w-5"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                        >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path
                                 d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H5zm0 2h10v7.5a1.5 1.5 0 01-1.5 1.5H6.5A1.5 1.5 0 015 12.5V5z"
                             />
@@ -67,12 +60,7 @@
                         id="nav-creations"
                         class="nav-link text-gray-400 hover:bg-gray-800/60 hover:text-white px-4 py-2 rounded-lg font-semibold flex items-center space-x-3"
                     >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-5 w-5"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                        >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path
                                 fill-rule="evenodd"
                                 d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
@@ -92,10 +80,7 @@
                 >
                     <h1 class="text-xl font-bold text-white">Fourth Shot</h1>
                     <div class="flex space-x-2">
-                        <button
-                            id="mobile-nav-splashes"
-                            class="p-2 rounded-md bg-gray-700/50 text-white"
-                        >
+                        <button id="mobile-nav-splashes" class="p-2 rounded-md bg-gray-700/50 text-white">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 class="h-5 w-5"
@@ -107,10 +92,7 @@
                                 />
                             </svg>
                         </button>
-                        <button
-                            id="mobile-nav-creations"
-                            class="p-2 rounded-md text-gray-400"
-                        >
+                        <button id="mobile-nav-creations" class="p-2 rounded-md text-gray-400">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 class="h-5 w-5"
@@ -131,9 +113,7 @@
                 <div id="page-splashes" class="page p-4 md:p-8">
                     <!-- Search and Filter Bar -->
                     <div class="bg-gray-800/50 p-4 rounded-xl mb-8">
-                        <div
-                            class="flex flex-col md:flex-row gap-4 items-center"
-                        >
+                        <div class="flex flex-col md:flex-row gap-4 items-center">
                             <div class="relative flex-grow w-full">
                                 <svg
                                     class="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"
@@ -155,13 +135,47 @@
                             </div>
                             <div
                                 class="flex items-center gap-4 w-full md:w-auto"
+                                hx-get="/champions"
+                                hx-trigger="change"
+                                hx-target="#champions-grid"
+                                hx-indicator="#loading-champions"
+                                hx-include="[name='sort_by'], [name='sort_order']"
                             >
-                                <select
-                                    class="bg-gray-700/60 border border-transparent focus:border-indigo-500 focus:ring-indigo-500 rounded-lg px-4 py-2.5 transition"
+                                <div class="bg-gray-700/60 rounded-lg px-4 py-2.5">Sort By: Name</div>
+                                <input type="hidden" name="sort_by" value="name" />
+                                <input type="hidden" id="sort-order" name="sort_order" value="desc" />
+                                <button
+                                    id="sort-direction-btn"
+                                    type="button"
+                                    class="p-2.5 bg-gray-700/60 border border-transparent hover:border-indigo-500 rounded-lg transition"
                                 >
-                                    <option>Sort By: Release Date</option>
-                                    <option>Sort By: Name</option>
-                                </select>
+                                    <svg
+                                        id="icon-desc"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        class="h-5 w-5"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                    >
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clip-rule="evenodd"
+                                        />
+                                    </svg>
+                                    <svg
+                                        id="icon-asc"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        class="h-5 w-5 hidden"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                    >
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                                            clip-rule="evenodd"
+                                        />
+                                    </svg>
+                                </button>
                                 <select
                                     class="bg-gray-700/60 border border-transparent focus:border-indigo-500 focus:ring-indigo-500 rounded-lg px-4 py-2.5 transition"
                                 >
@@ -185,15 +199,9 @@
                             hx-get="/champions"
                             hx-trigger="load"
                             hx-indicator="#loading-champions"
-                        >
-                            <div
-                                id="loading-champions"
-                                class="htmx-indicator text-center py-8"
-                            >
-                                <div class="text-gray-400">
-                                    Loading champions...
-                                </div>
-                            </div>
+                        ></div>
+                        <div id="loading-champions" class="htmx-indicator text-center py-8">
+                            <div class="text-gray-400">Loading champions...</div>
                         </div>
                     </section>
 
@@ -213,9 +221,7 @@
                 <div id="page-creations" class="page p-4 md:p-8 hidden">
                     <!-- Search and Filter Bar -->
                     <div class="bg-gray-800/50 p-4 rounded-xl mb-8">
-                        <div
-                            class="flex flex-col md:flex-row gap-4 items-center"
-                        >
+                        <div class="flex flex-col md:flex-row gap-4 items-center">
                             <div class="relative flex-grow w-full">
                                 <svg
                                     class="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"
@@ -235,9 +241,7 @@
                                     class="w-full bg-gray-700/60 border border-transparent focus:border-indigo-500 focus:ring-indigo-500 rounded-lg pl-11 pr-4 py-2.5 transition"
                                 />
                             </div>
-                            <div
-                                class="flex items-center gap-4 w-full md:w-auto"
-                            >
+                            <div class="flex items-center gap-4 w-full md:w-auto">
                                 <select
                                     class="bg-gray-700/60 border border-transparent focus:border-indigo-500 focus:ring-indigo-500 rounded-lg px-4 py-2.5 transition"
                                 >
@@ -272,66 +276,42 @@
                         champions: ["Ashe", "Ekko", "Fiora", "Jhin", "Yasuo"],
                         colors: ["#00e5ff", "#ff003c", "#a6ff00"],
                         release: 2015,
-                        imageUrl:
-                            "https://placehold.co/600x400/1a202c/00e5ff?text=PROJECT",
+                        imageUrl: "https://placehold.co/600x400/1a202c/00e5ff?text=PROJECT",
                     },
                     {
                         title: "Star Guardian",
                         champions: ["Lux", "Ahri", "Zoe", "Kai'Sa"],
                         colors: ["#ff66d9", "#ffcc00", "#66ffff"],
                         release: 2016,
-                        imageUrl:
-                            "https://placehold.co/600x400/1a202c/ff66d9?text=Star+Guardian",
+                        imageUrl: "https://placehold.co/600x400/1a202c/ff66d9?text=Star+Guardian",
                     },
                     {
                         title: "K/DA",
-                        champions: [
-                            "Ahri",
-                            "Akali",
-                            "Evelynn",
-                            "Kai'Sa",
-                            "Seraphine",
-                        ],
+                        champions: ["Ahri", "Akali", "Evelynn", "Kai'Sa", "Seraphine"],
                         colors: ["#b456ff", "#fff", "#ffd700"],
                         release: 2018,
-                        imageUrl:
-                            "https://placehold.co/600x400/1a202c/b456ff?text=K/DA",
+                        imageUrl: "https://placehold.co/600x400/1a202c/b456ff?text=K/DA",
                     },
                     {
                         title: "High Noon",
                         champions: ["Jhin", "Yasuo", "Ashe", "Darius"],
                         colors: ["#ff4500", "#4a2c00", "#ffab40"],
                         release: 2018,
-                        imageUrl:
-                            "https://placehold.co/600x400/1a202c/ff4500?text=High+Noon",
+                        imageUrl: "https://placehold.co/600x400/1a202c/ff4500?text=High+Noon",
                     },
                     {
                         title: "Blood Moon",
-                        champions: [
-                            "Jhin",
-                            "Yasuo",
-                            "Akali",
-                            "Thresh",
-                            "Diana",
-                        ],
+                        champions: ["Jhin", "Yasuo", "Akali", "Thresh", "Diana"],
                         colors: ["#cc0000", "#2e2e2e", "#ffffff"],
                         release: 2012,
-                        imageUrl:
-                            "https://placehold.co/600x400/1a202c/cc0000?text=Blood+Moon",
+                        imageUrl: "https://placehold.co/600x400/1a202c/cc0000?text=Blood+Moon",
                     },
                     {
                         title: "Spirit Blossom",
-                        champions: [
-                            "Thresh",
-                            "Yasuo",
-                            "Yone",
-                            "Ahri",
-                            "Kindred",
-                        ],
+                        champions: ["Thresh", "Yasuo", "Yone", "Ahri", "Kindred"],
                         colors: ["#ffb3de", "#8be9fd", "#a7a0ff"],
                         release: 2020,
-                        imageUrl:
-                            "https://placehold.co/600x400/1a202c/ffb3de?text=Spirit+Blossom",
+                        imageUrl: "https://placehold.co/600x400/1a202c/ffb3de?text=Spirit+Blossom",
                     },
                 ];
 
@@ -339,46 +319,43 @@
                     {
                         id: 1,
                         name: "Jhin vs. Zed",
-                        imageUrl:
-                            "https://placehold.co/600x800/2d3748/ffffff?text=Creation+1",
+                        imageUrl: "https://placehold.co/600x800/2d3748/ffffff?text=Creation+1",
                     },
                     {
                         id: 2,
                         name: "K/DA Stage Mix",
-                        imageUrl:
-                            "https://placehold.co/600x800/2d3748/ffffff?text=Creation+2",
+                        imageUrl: "https://placehold.co/600x800/2d3748/ffffff?text=Creation+2",
                     },
                     {
                         id: 3,
                         name: "PROJECT Dystopia",
-                        imageUrl:
-                            "https://placehold.co/600x800/2d3748/ffffff?text=Creation+3",
+                        imageUrl: "https://placehold.co/600x800/2d3748/ffffff?text=Creation+3",
                     },
                     {
                         id: 4,
                         name: "Ashe's Journey",
-                        imageUrl:
-                            "https://placehold.co/600x800/2d3748/ffffff?text=Creation+4",
+                        imageUrl: "https://placehold.co/600x800/2d3748/ffffff?text=Creation+4",
                     },
                     {
                         id: 5,
                         name: "Ionian Peace",
-                        imageUrl:
-                            "https://placehold.co/600x800/2d3748/ffffff?text=Creation+5",
+                        imageUrl: "https://placehold.co/600x800/2d3748/ffffff?text=Creation+5",
                     },
                     {
                         id: 6,
                         name: "Demacian Light",
-                        imageUrl:
-                            "https://placehold.co/600x800/2d3748/ffffff?text=Creation+6",
+                        imageUrl: "https://placehold.co/600x800/2d3748/ffffff?text=Creation+6",
                     },
                 ];
 
                 // --- DOM Elements ---
                 const championsGrid = document.getElementById("champions-grid");
-                const skinLinesGrid =
-                    document.getElementById("skin-lines-grid");
+                const skinLinesGrid = document.getElementById("skin-lines-grid");
                 const creationsGrid = document.getElementById("creations-grid");
+                const sortDirectionBtn = document.getElementById("sort-direction-btn");
+                const sortOrderInput = document.getElementById("sort-order");
+                const iconAsc = document.getElementById("icon-asc");
+                const iconDesc = document.getElementById("icon-desc");
 
                 // Navigation Elements
                 const navLinks = document.querySelectorAll(".nav-link");
@@ -389,6 +366,20 @@
                 const pages = document.querySelectorAll(".page");
                 const navSplashes = document.getElementById("nav-splashes");
                 const navCreations = document.getElementById("nav-creations");
+
+                // --- SORTING LOGIC ---
+                sortDirectionBtn.addEventListener("click", () => {
+                    const currentOrder = sortOrderInput.value;
+                    const newOrder = currentOrder === "asc" ? "desc" : "asc";
+                    sortOrderInput.value = newOrder;
+
+                    // Update icon visibility
+                    iconAsc.classList.toggle("hidden", newOrder === "asc");
+                    iconDesc.classList.toggle("hidden", newOrder === "desc");
+
+                    // Manually trigger htmx request on the parent container
+                    htmx.trigger(sortDirectionBtn.parentElement, "change");
+                });
 
                 // --- RENDER FUNCTIONS ---
 
@@ -450,22 +441,16 @@
 
                     // Update desktop nav link styles
                     navLinks.forEach((link) => {
-                        const isActive =
-                            link.getAttribute("href") ===
-                            `#${pageId.split("-")[1]}`;
+                        const isActive = link.getAttribute("href") === `#${pageId.split("-")[1]}`;
                         link.classList.toggle("bg-gray-700/50", isActive);
                         link.classList.toggle("text-white", isActive);
                         link.classList.toggle("text-gray-400", !isActive);
-                        link.classList.toggle(
-                            "hover:bg-gray-800/60",
-                            !isActive,
-                        );
+                        link.classList.toggle("hover:bg-gray-800/60", !isActive);
                     });
 
                     // Update mobile nav button styles
                     mobileNavButtons.forEach((button) => {
-                        const isActive =
-                            button.id === `mobile-nav-${pageId.split("-")[1]}`;
+                        const isActive = button.id === `mobile-nav-${pageId.split("-")[1]}`;
                         button.classList.toggle("bg-gray-700/50", isActive);
                         button.classList.toggle("text-white", isActive);
                         button.classList.toggle("text-gray-400", !isActive);
@@ -498,10 +483,7 @@
                 renderCreations();
 
                 // Set initial page based on hash or default to splashes
-                const initialPage =
-                    window.location.hash === "#creations"
-                        ? "page-creations"
-                        : "page-splashes";
+                const initialPage = window.location.hash === "#creations" ? "page-creations" : "page-splashes";
                 switchPage(initialPage);
             });
         </script>
