@@ -524,7 +524,7 @@ pub struct SkinLine {
 #[derive(Debug, Default, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct Champion {
-    id: u64,
+    pub id: u64,
     pub name: String,
     alias: String,
     title: String,
