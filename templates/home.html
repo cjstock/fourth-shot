@@ -129,8 +129,14 @@
                                 </svg>
                                 <input
                                     type="text"
+                                    name="search_term"
                                     placeholder="Search champions, skins..."
                                     class="w-full bg-gray-700/60 border border-transparent focus:border-indigo-500 focus:ring-indigo-500 rounded-lg pl-11 pr-4 py-2.5 transition"
+                                    hx-get="/champions"
+                                    hx-trigger="keyup"
+                                    hx-target="#champions-grid"
+                                    hx-indicator="#loading-champions"
+                                    hx-include="[name='sort_by'], [name='sort_order'], [name='search_term']"
                                 />
                             </div>
                             <div
@@ -139,7 +145,7 @@
                                 hx-trigger="change"
                                 hx-target="#champions-grid"
                                 hx-indicator="#loading-champions"
-                                hx-include="[name='sort_by'], [name='sort_order']"
+                                hx-include="[name='sort_by'], [name='sort_order'], [name='search_term']"
                             >
                                 <div class="bg-gray-700/60 rounded-lg px-4 py-2.5">Sort By: Name</div>
                                 <input type="hidden" name="sort_by" value="name" />
@@ -199,6 +205,7 @@
                             hx-get="/champions"
                             hx-trigger="load"
                             hx-indicator="#loading-champions"
+                            hx-include="[name='sort_by'], [name='sort_order'], [name='search_term']"
                         ></div>
                         <div id="loading-champions" class="htmx-indicator text-center py-8">
                             <div class="text-gray-400">Loading champions...</div>

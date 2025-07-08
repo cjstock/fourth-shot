@@ -36,10 +36,15 @@ async fn champions_grid(
     State(state): State<AppState>,
     Query(search_params): Query<HashMap<String, String>>,
 ) -> Result<impl IntoResponse, AppError> {
+    let search_term = search_params
+        .get("search_term")
+        .map_or("", |s| s.as_str())
+        .to_lowercase();
     let mut champ_objs: Vec<ChampionGridItem> = state
         .cdrag
         .champions
         .values()
+        .filter(|ch| ch.name.to_lowercase().contains(&search_term))
         .map(|ch| ChampionGridItem {
             id: ch.id,
             name: ch.name.clone(),
