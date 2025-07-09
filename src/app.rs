@@ -28,6 +28,8 @@ pub enum AppError {
     Render(#[from] askama::Error),
     /// anyhow support
     Anyhow(#[from] anyhow::Error),
+    /// missing
+    NotFound,
 }
 
 impl IntoResponse for AppError {
@@ -39,6 +41,7 @@ impl IntoResponse for AppError {
         let status = match &self {
             AppError::Render(_) => StatusCode::INTERNAL_SERVER_ERROR,
             AppError::Anyhow(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            AppError::NotFound => StatusCode::NOT_FOUND,
         };
         let tmpl = Tmpl {};
         if let Ok(body) = tmpl.render() {

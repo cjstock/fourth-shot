@@ -31,6 +31,15 @@ async fn main() -> anyhow::Result<()> {
 
     let app_state = AppState::new().await?;
 
+    for champ in app_state.cdrag.champions.values() {
+        for skin in &champ.skins {
+            app_state
+                .cdrag
+                .download_skin_asset(&skin, &fourth_shot::cdrag::SkinAsset::UncenteredSplash)
+                .await?;
+        }
+    }
+
     let app = Router::new()
         .nest_service("/assets", ServeDir::new("assets"))
         .nest_service(

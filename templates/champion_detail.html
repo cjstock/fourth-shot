@@ -1,0 +1,56 @@
+{% extends "layout.html" %} {% block title %}{{ champion.name }}{% endblock %} {% block content %} {% let base_skin =
+champion.base_skin().unwrap() %}
+<div class="container mx-auto px-4 py-8 text-white">
+    <div class="relative rounded-lg overflow-hidden mb-8">
+        <img
+            src="/cdrag-assets/{{ base_skin.uncentered_splash_path }}"
+            alt="{{ champion.name }} Base Skin"
+            class="w-full h-auto object-contain"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 p-8">
+            <h1 class="text-5xl font-bold font-heading">{{ champion.name }}</h1>
+            <h2 class="text-2xl text-gray-300">{{ champion.title }}</h2>
+        </div>
+    </div>
+
+    <h3 class="text-3xl font-bold mb-4">Skins</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for skin in champion.skins_no_base() %}
+        <div class="bg-gray-800 rounded-lg overflow-hidden group cursor-pointer">
+            <div class="relative">
+                <img
+                    src="/cdrag-assets/{{ skin.uncentered_splash_path }}"
+                    alt="{{ skin.name }}"
+                    class="w-full h-48 object-cover"
+                />
+            </div>
+            <div class="p-4 flex flex-col">
+                <h4 class="text-lg font-semibold">{{ skin.name }}</h4>
+                <div class="flex flex-row space-x-2 pt-2">
+                    {% match skin.rarity %} {% when crate::cdrag::Rarity::KEpic %}
+                    <p class="text-md bg-blue-400/70 border-blue-400 border-2 rounded-2xl px-2">Epic</p>
+                    {% when crate::cdrag::Rarity::KLegendary %}
+                    <p class="text-md bg-yellow-400/70 border-yellow-400 border-2 rounded-2xl px-2">Legendary</p>
+                    {% when crate::cdrag::Rarity::KMythic %}
+                    <p class="text-md bg-red-400/70 border-red-400 border-2 rounded-2xl px-2">Mythic</p>
+                    {% when crate::cdrag::Rarity::KExalted %}
+                    <p class="text-md bg-blue-400/70 border-blue-400 border-2 rounded-2xl px-2">Exalted</p>
+                    {% when crate::cdrag::Rarity::KUltimate %}
+                    <p class="text-md bg-blue-400/70 border-blue-400 border-2 rounded-2xl px-2">Ultimate</p>
+                    {% when crate::cdrag::Rarity::KRare %}
+                    <p class="text-md bg-purple-400/70 border-purple-400 border-2 rounded-2xl px-2">Rare</p>
+                    {% when crate::cdrag::Rarity::KTranscendent %}
+                    <p class="text-md bg-blue-400/70 border-blue-400 border-2 rounded-2xl px-2">Transcendent</p>
+                    {% when _ %}
+                    <p class="text-md">{{ skin.rarity|safe }}</p>
+                    {% endmatch %} {% if skin.is_legacy %}
+                    <p class="text-md bg-gray-400/70 border-gray-400 border-2 rounded-2xl px-2">Legacy</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

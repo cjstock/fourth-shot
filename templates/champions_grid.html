@@ -1,8 +1,6 @@
-<div
-    class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12 gap-4"
->
+<div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12 gap-4">
     {% for champion in champions %}
-    <div class="group text-center cursor-pointer">
+    <a href="/champions/{{ champion.id }}" class="group text-center no-underline">
         <div
             class="w-full aspect-square bg-gray-800 rounded-lg overflow-hidden transform transition duration-300 group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-indigo-500/20"
         >
@@ -13,11 +11,7 @@
                 onerror="this.src='https://placehold.co/100x100/1f2937/4f46e5?text={{ champion.name|truncate(length=1) }}'"
             />
         </div>
-        <p
-            class="mt-2 text-sm font-medium text-gray-300 group-hover:text-white transition"
-        >
-            {{ champion.name }}
-        </p>
-    </div>
+        <p class="mt-2 text-sm font-medium text-gray-300 group-hover:text-white transition">{{ champion.name }}</p>
+    </a>
     {% endfor %}
 </div>

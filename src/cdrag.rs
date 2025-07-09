@@ -351,6 +351,12 @@ impl CDragon {
 
     pub async fn download_skin_asset(&self, skin: &Skin, asset: &SkinAsset) -> anyhow::Result<()> {
         let asset_path = self.skin_path_of(skin, asset)?;
+        let file_path = self.data_dir.join(&asset_path);
+
+        if file_path.try_exists().is_ok_and(|it| it == true) {
+            return Ok(());
+        }
+
         let asset_url = format!("{GAME_DATA_URL}/{}", asset_path.to_str().unwrap());
         let bytes = self
             .http_client
@@ -360,7 +366,6 @@ impl CDragon {
             .with_context(|| "couldn't download asset")?
             .bytes()
             .await?;
-        let file_path = self.data_dir.join(asset_path);
         let mut file_dir = file_path.clone();
         file_dir.pop();
         create_dir_all(&file_dir)?;
@@ -380,39 +385,47 @@ impl CDragon {
     }
 }
 
-#[derive(Debug, Default, Deserialize, Serialize, PartialEq, Eq)]
+#[derive(Debug, Default, Deserialize, Serialize, PartialEq, Eq, Clone)]
 #[serde(rename_all = "camelCase")]
-struct TactialInfo {
-    style: u64,
-    difficulty: u64,
-    damage_type: String,
+pub struct TactialInfo {
+    pub style: u64,
+    pub difficulty: u64,
+    pub damage_type: String,
 }
 
-#[derive(Debug, Default, Deserialize, Serialize, PartialEq, Eq)]
+#[derive(Debug, Default, Deserialize, Serialize, PartialEq, Eq, Clone)]
 #[serde(rename_all = "camelCase")]
-struct PlaystyleInfo {
-    damage: u64,
-    durability: u64,
-    crowd_control: u64,
-    mobility: u64,
-    utility: u64,
+pub struct PlaystyleInfo {
+    pub damage: u64,
+    pub durability: u64,
+    pub crowd_control: u64,
+    pub mobility: u64,
+    pub utility: u64,
 }
 
-#[derive(Debug, Default, Deserialize, Serialize, PartialEq, Eq)]
+#[derive(Debug, Default, Deserialize, Serialize, PartialEq, Eq, Clone, strum::Display)]
 #[serde(rename_all = "camelCase")]
 pub enum Rarity {
+    #[strum(to_string = "Epic")]
     KEpic,
+    #[strum(to_string = "Legendary")]
     KLegendary,
+    #[strum(to_string = "Mythic")]
     KMythic,
+    #[strum(to_string = "")]
     #[default]
     KNoRarity,
+    #[strum(to_string = "Rare")]
     KRare,
+    #[strum(to_string = "Transcendent")]
     KTranscendent,
+    #[strum(to_string = "Ultimate")]
     KUltimate,
+    #[strum(to_string = "Exalted")]
     KExalted,
 }
 
-#[derive(Debug, Default, Deserialize, Serialize, PartialEq, Eq)]
+#[derive(Debug, Default, Deserialize, Serialize, PartialEq, Eq, Clone)]
 pub enum SkinType {
     Ultimate,
     #[default]
@@ -452,26 +465,26 @@ pub enum SkinType {
 ///     assets/characters/akshan/skins/base/images/akshan_splash_uncentered_0.jpg
 ///
 ///
-#[derive(Debug, Default, Deserialize, Serialize, PartialEq, Eq)]
+#[derive(Debug, Default, Deserialize, Serialize, PartialEq, Eq, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Skin {
-    id: u64,
-    is_base: bool,
-    name: String,
+    pub id: u64,
+    pub is_base: bool,
+    pub name: String,
     #[serde(deserialize_with = "deserialize_asset_path")]
-    splash_path: String,
+    pub splash_path: String,
     #[serde(deserialize_with = "deserialize_asset_path")]
-    uncentered_splash_path: String,
+    pub uncentered_splash_path: String,
     #[serde(deserialize_with = "deserialize_asset_path")]
-    tile_path: String,
+    pub tile_path: String,
     #[serde(deserialize_with = "deserialize_asset_path")]
-    load_screen_path: String,
-    skin_type: SkinType,
-    rarity: Rarity,
-    is_legacy: bool,
+    pub load_screen_path: String,
+    pub skin_type: SkinType,
+    pub rarity: Rarity,
+    pub is_legacy: bool,
     #[serde(deserialize_with = "deserialize_skin_lines")]
-    skin_lines: Vec<u64>,
-    description: Option<String>,
+    pub skin_lines: Vec<u64>,
+    pub description: Option<String>,
 }
 
 pub enum SkinAsset {
@@ -521,20 +534,20 @@ pub struct SkinLine {
     description: String,
 }
 
-#[derive(Debug, Default, Deserialize, Serialize, PartialEq, Eq)]
+#[derive(Debug, Default, Deserialize, Serialize, PartialEq, Eq, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Champion {
     pub id: u64,
     pub name: String,
-    alias: String,
-    title: String,
-    short_bio: String,
-    tactical_info: TactialInfo,
-    playstyle_info: PlaystyleInfo,
+    pub alias: String,
+    pub title: String,
+    pub short_bio: String,
+    pub tactical_info: TactialInfo,
+    pub playstyle_info: PlaystyleInfo,
     #[serde(deserialize_with = "deserialize_icon_path")]
     pub square_portrait_path: String,
-    roles: Vec<String>,
-    skins: Vec<Skin>,
+    pub roles: Vec<String>,
+    pub skins: Vec<Skin>,
 }
 
 fn deserialize_icon_path<'de, D>(deserializer: D) -> Result<String, D::Error>

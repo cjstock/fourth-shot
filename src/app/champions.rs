@@ -1,15 +1,14 @@
+use crate::cdrag::Skin;
+use anyhow::anyhow;
 use std::collections::HashMap;
 
 use askama::Template;
 use axum::{
     Router,
-    extract::{Query, State},
+    extract::{Path, Query, State},
     response::{Html, IntoResponse},
     routing::get,
 };
-use chrono::NaiveDate;
-
-use crate::cdrag::Champion;
 
 use super::AppError;
 use super::AppState;
@@ -17,6 +16,7 @@ use super::AppState;
 pub fn router<S>(state: AppState) -> Router<S> {
     Router::new()
         .route("/champions", get(champions_grid))
+        .route("/champions/{id}", get(champion_detail))
         .with_state(state)
 }
 
@@ -68,4 +68,55 @@ async fn champions_grid(
     };
 
     Ok(Html(template.render()?))
+}
+
+struct ChampionDetail {
+    id: u64,
+    name: String,
+    title: String,
+    short_bio: String,
+    skins: Vec<Skin>,
+}
+
+impl ChampionDetail {
+    pub fn base_skin(&self) -> Option<&Skin> {
+        self.skins.iter().find(|skin| skin.is_base)
+    }
+
+    pub fn skins_no_base(&self) -> Vec<&Skin> {
+        self.skins.iter().filter(|skin| !skin.is_base).collect()
+    }
+}
+
+#[derive(Template)]
+#[template(path = "champion_detail.html")]
+struct ChampionDetailTemplate {
+    champion: ChampionDetail,
+}
+
+async fn champion_detail(
+    State(state): State<AppState>,
+    Path(champion_id): Path<u64>,
+) -> Result<impl IntoResponse, AppError> {
+    let champion = state.cdrag.champion_by_id(champion_id);
+    match champion {
+        None => Err(AppError::NotFound),
+        Some(champ) => {
+            
+
+            let skins = champ.skins.clone();
+            return Ok(Html(
+                ChampionDetailTemplate {
+                    champion: ChampionDetail {
+                        id: champ.id,
+                        name: champ.name.clone(),
+                        title: champ.title.clone(),
+                        short_bio: champ.short_bio.clone(),
+                        skins,
+                    },
+                }
+                .render()?,
+            ));
+        }
+    }
 }
