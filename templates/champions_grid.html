@@ -1,17 +1,107 @@
+<script>
+    const keysPressed = new Set();
+    document.addEventListener("keydown", (e) => {
+        keysPressed.add(e.key);
+    });
+    document.addEventListener("keyup", (e) => {
+        keysPressed.delete(e.key);
+    });
+    var hovered = null;
+
+    function setSelected(to) {
+        const it = document.getElementById(hovered);
+        it.dataset.toggled = to ? "true" : "false";
+        const parent = it.closest("div");
+        if (to == true) {
+            parent.classList.add("bg-gradient-to-br");
+            parent.classList.add("from-yellow-500");
+            parent.classList.add("to-amber-500");
+        } else {
+            parent.classList.remove("bg-gradient-to-br");
+            parent.classList.remove("from-yellow-500");
+            parent.classList.remove("to-amber-500");
+        }
+        const child = it.querySelector("p");
+        if (to == true) {
+            child.classList.add("text-gray-800");
+        } else {
+            child.classList.remove("text-gray-800");
+        }
+    }
+
+    function clearAll() {
+        var selected = localStorage.getItem("toggledChampions");
+        if (selected) {
+            selected = JSON.parse(selected);
+            selected.forEach((id) => {
+                const it = document.getElementById(id);
+                it.dataset.toggled = "false";
+                const parent = it.closest("div");
+                parent.classList.remove("bg-gradient-to-br");
+                parent.classList.remove("from-yellow-500");
+                parent.classList.remove("to-amber-500");
+                const child = it.querySelector("p");
+                child.classList.remove("text-gray-800");
+            });
+        }
+        localStorage.removeItem("toggledChampions");
+    }
+
+    function toggleSelected() {
+        const it = document.getElementById(hovered);
+        it.dataset.toggled = it.dataset.toggled === "true" ? "false" : "true";
+        const parent = it.closest("div");
+        parent.classList.toggle("bg-gradient-to-br");
+        parent.classList.toggle("from-yellow-500");
+        parent.classList.toggle("to-amber-500");
+        const child = it.querySelector("p");
+        child.classList.toggle("text-gray-800");
+    }
+    function isHovered(e) {
+        hovered = e.id;
+        if (keysPressed.has("s")) {
+            setSelected(true);
+            localStorage.setItem("toggledChampions", toggled());
+        }
+    }
+    function isNotHovered(e) {
+        hovered = null;
+    }
+    window.onkeypress = function (e) {
+        if (e.key === "t") {
+            if (hovered !== null) {
+                toggleSelected();
+                localStorage.setItem("toggledChampions", toggled());
+            }
+        }
+
+        if (e.key === "c") {
+            clearAll();
+        }
+    };
+    var toggled = () => JSON.stringify([...document.querySelectorAll('[data-toggled="true"]')].map((it) => it.id));
+</script>
 <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12 gap-4">
     {% for champion in champions %}
-    <a href="/champions/{{ champion.id }}" class="group text-center no-underline">
-        <div
-            class="w-full aspect-square bg-gray-800 rounded-lg overflow-hidden transform transition duration-300 group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-indigo-500/20"
+    <div class="p-2 rounded-lg transition-colors">
+        <a
+            id="{{  champion.id }}"
+            name="{{ champion.name }}"
+            href="/champions/{{ champion.id }}"
+            class="group text-center no-underline rounded-lg"
+            onmouseenter="{isHovered(this)}"
+            onmouseleave="{isNotHovered(this)}"
         >
-            <img
-                src="/cdrag-assets/{{ champion.icon_url }}"
-                alt="{{ champion.name }}"
-                class="w-full h-full object-cover"
-                onerror="this.src='https://placehold.co/100x100/1f2937/4f46e5?text={{ champion.name|truncate(length=1) }}'"
-            />
-        </div>
-        <p class="mt-2 text-sm font-medium text-gray-300 group-hover:text-white transition">{{ champion.name }}</p>
-    </a>
+            <div class="w-full aspect-square bg-gray-800 rounded-lg overflow-hidden transform transition duration-300">
+                <img
+                    src="/cdrag-assets/{{ champion.icon_url }}"
+                    alt="{{ champion.name }}"
+                    class="w-full h-full object-cover"
+                    onerror="this.src='https://placehold.co/100x100/1f2937/4f46e5?text={{ champion.name|truncate(length=1) }}'"
+                />
+            </div>
+            <p class="mt-2 text-sm font-medium text-gray-300 group-hover:text-white transition">{{ champion.name }}</p>
+        </a>
+    </div>
     {% endfor %}
 </div>
